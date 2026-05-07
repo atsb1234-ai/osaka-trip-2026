@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSAKA TRIO 2026 | 職人漫遊指揮中心</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Inter:wght@300;400;600;800&family=JetBrains+Mono&display=swap');
+
+        :root {
+            --color-sakura: #FCE4EC;
+            --color-sakura-deep: #F8BBD0;
+            --color-sumi: #1A1A1A;
+            --color-crimson: #BC002D;
+            --color-gold: #D4AF37;
+            --color-paper: #FCFAF2;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Serif TC', serif;
+            background-color: var(--color-paper);
+            color: var(--color-sumi);
+            scroll-behavior: smooth;
+        }
+
+        /* 櫻花背景動效 */
+        .sakura-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: -1; opacity: 0.8;
+        }
+
+        .petal {
+            position: absolute; background-color: var(--color-sakura-deep);
+            border-radius: 150% 0 150% 0; opacity: 0.6;
+            filter: blur(0.5px);
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg) translateX(0); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(105vh) rotate(360deg) translateX(100px); opacity: 0; }
+        }
+
+        /* 高級側邊欄 */
+        .side-index {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .nav-item {
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            color: #888;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute; left: -20px; top: 50%; width: 0px; height: 1px;
+            background: var(--color-crimson);
+            transition: all 0.4s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--color-crimson);
+            transform: translateX(10px);
+        }
+
+        .nav-item.active::before { width: 15px; }
+
+        /* 卡片與時間軸 */
+        .glass-card {
+            background: white;
+            border: 1px solid rgba(0,0,0,0.03);
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
+            border-radius: 24px;
+            transition: transform 0.4s ease;
+        }
+
+        .glass-card:hover { transform: translateY(-4px); }
+
+        .timeline-container::before {
+            content: '';
+            position: absolute; left: 0; top: 0; width: 1px; height: 100%;
+            background: linear-gradient(to bottom, transparent, #ddd, #ddd, transparent);
+        }
+
+        .date-badge {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--color-sumi);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+        }
+
+        /* 垂直文字裝飾 */
+        .vertical-text {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+        }
+
+        /* 響應式優化 */
+        @media (max-width: 1024px) {
+            .side-index { display: none; }
+        }
+    </style>
+</head>
+<body class="flex flex-col lg:flex-row">
+
+    <div class="sakura-container" id="sakura-box"></div>
+
+    <!-- Sidebar: Modern Index -->
+    <aside class="side-index w-80 h-screen sticky top-0 p-12 flex flex-col hidden lg:flex">
+        <div class="mb-16">
+            <div class="inline-block border-2 border-gold p-1 rounded-full mb-4">
+                <img src="image_78428c.jpg" alt="Logo" class="w-16 h-16 rounded-full object-cover">
+            </div>
+            <h1 class="font-black text-2xl tracking-tighter leading-none">OSAKA<br>TRIO 2026</h1>
+            <p class="text-[10px] uppercase font-bold text-red-600 mt-2 tracking-widest italic">Mission Hub</p>
+        </div>
+
+        <nav class="space-y-6 flex-grow text-xs font-bold uppercase tracking-[0.2em]">
+            <a href="#overview" class="nav-item block active">Overview / 總覽</a>
+            <a href="#transport" class="nav-item block">Transport / 航班與轉乘</a>
+            <a href="#base" class="nav-item block">Base / 住宿據點</a>
+            <div class="pt-6 border-t border-slate-100 space-y-4">
+                <a href="#day1" class="nav-item block text-[10px]">Day 01 / 系統上線</a>
+                <a href="#day2" class="nav-item block text-[10px]">Day 02 / 姬路・神戶</a>
+                <a href="#day3" class="nav-item block text-[10px]">Day 03 / 天橋立・伊根</a>
+                <a href="#day4" class="nav-item block text-[10px]">Day 04 / 嵐山小火車</a>
+                <a href="#day5" class="nav-item block text-[10px]">Day 05 / 宇治・京都</a>
+                <a href="#day6" class="nav-item block text-[10px]">Day 06 / 大阪散策</a>
+                <a href="#day7" class="nav-item block text-[10px]">Day 07 / 任務回傳</a>
+            </div>
+        </nav>
+
+        <div class="mt-auto text-[10px] text-slate-300 font-mono tracking-widest">
+            V 4.1.0-SAKURA
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-grow min-h-screen px-6 py-12 lg:px-24 lg:py-20 max-w-6xl">
+
+        <!-- Mobile Header -->
+        <div class="lg:hidden flex items-center justify-between mb-12">
+            <h1 class="font-black text-xl tracking-tighter">OSAKA 2026</h1>
+            <img src="image_78428c.jpg" alt="Logo" class="w-12 h-12 rounded-full border border-gold">
+        </div>
+
+        <!-- Section: Overview -->
+        <section id="overview" class="mb-32">
+            <div class="flex flex-col md:flex-row items-center gap-16">
+                <div class="md:w-3/5">
+                    <span class="text-xs font-black text-red-600 uppercase tracking-widest mb-4 block">Spring 2026</span>
+                    <h2 class="text-6xl md:text-7xl font-black text-slate-900 leading-none mb-8">
+                        拋妻拋子<br><span class="italic text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-pink-400">職人漫遊</span>
+                    </h2>
+                    <p class="text-slate-500 leading-relaxed max-w-md text-sm md:text-base">
+                        這是一場結合電信精準規劃與大和職人精神的男子旅。我們以「大國町」為數據交換點，橫越關西廣域，將所有稍縱即逝的美景封包化為永恆的回憶。
+                    </p>
+                </div>
+                <div class="md:w-2/5 relative">
+                    <div class="vertical-text absolute -left-10 top-0 text-[10px] font-bold text-slate-300 tracking-[0.5em] uppercase">
+                        Sakura Season 2026
+                    </div>
+                    <img src="image_78428c.jpg" alt="Hero" class="w-full h-auto rounded-[2rem] shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-700 border-[12px] border-white">
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Transport (Flight) -->
+        <section id="transport" class="mb-32">
+            <h3 class="text-2xl font-black mb-12 flex items-center gap-4">
+                <span class="w-12 h-px bg-slate-900"></span> 航班傳輸計畫
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Flight Go -->
+                <div class="glass-card p-10 bg-gradient-to-br from-white to-pink-50">
+                    <div class="flex justify-between items-center mb-10">
+                        <span class="px-3 py-1 bg-red-600 text-white text-[10px] font-black rounded uppercase">EVA AIR BR130</span>
+                        <span class="text-xs text-slate-400 font-bold">2026.05.08</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div class="text-center">
+                            <div class="text-4xl font-black italic">15:35</div>
+                            <div class="text-[10px] text-slate-400 mt-2 font-bold tracking-widest">TPE 桃園</div>
+                        </div>
+                        <div class="flex-grow mx-8 relative flex items-center">
+                            <div class="w-full border-t border-dashed border-slate-200"></div>
+                            <i class="fas fa-plane absolute left-1/2 -translate-x-1/2 text-red-600 text-xl bg-[#FCFAF2] px-3"></i>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl font-black italic">19:35</div>
+                            <div class="text-[10px] text-slate-400 mt-2 font-bold tracking-widest">KIX 關西</div>
+                        </div>
+                    </div>
+                    <div class="mt-8 text-center text-[10px] text-slate-400 uppercase tracking-widest font-bold">Arrival Terminal: T1</div>
+                </div>
+
+                <!-- Flight Back -->
+                <div class="glass-card p-10 border-t-4 border-slate-900">
+                    <div class="flex justify-between items-center mb-10">
+                        <span class="px-3 py-1 bg-slate-800 text-white text-[10px] font-black rounded uppercase">EVA AIR BR129</span>
+                        <span class="text-xs text-slate-400 font-bold">2026.05.14</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div class="text-center">
+                            <div class="text-4xl font-black italic">12:10</div>
+                            <div class="text-[10px] text-slate-400 mt-2 font-bold tracking-widest">KIX 關西</div>
+                        </div>
+                        <div class="flex-grow mx-8 relative flex items-center">
+                            <div class="w-full border-t border-dashed border-slate-200"></div>
+                            <i class="fas fa-plane absolute left-1/2 -translate-x-1/2 text-slate-300 text-xl bg-white px-3 rotate-180"></i>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl font-black italic">14:30</div>
+                            <div class="text-[10px] text-slate-400 mt-2 font-bold tracking-widest">TPE 桃園</div>
+                        </div>
+                    </div>
+                    <div class="mt-8 text-center text-[10px] text-slate-400 uppercase tracking-widest font-bold">Check-in: 09:30 AM</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Base -->
+        <section id="base" class="mb-32">
+            <h3 class="text-2xl font-black mb-12 flex items-center gap-4">
+                <span class="w-12 h-px bg-slate-900"></span> 任務基地據點
+            </h3>
+            <div class="glass-card overflow-hidden grid grid-cols-1 md:grid-cols-3">
+                <div class="p-10 flex flex-col justify-center">
+                    <span class="date-badge mb-4 w-fit">PRIMARY HUB</span>
+                    <h4 class="text-2xl font-black mb-4">大國町 Airbnb</h4>
+                    <p class="text-xs text-slate-500 leading-relaxed mb-6">
+                        鄰近難波與心齋橋，步行 2 分鐘內可抵達地鐵 5 號出口，具備極佳的交通銜接性。
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-pink-50 rounded-lg flex items-center justify-center text-pink-600 text-sm">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <span class="text-xs font-bold">Node M21 / Exit 5</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 text-sm">
+                                <i class="fas fa-wifi"></i>
+                            </div>
+                            <span class="text-xs font-bold">High-Speed Access</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:col-span-2 h-[400px] border-l border-slate-50">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3282.0232!2d135.495!3d34.656!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6000e76669b4ede7%3A0x7bdcc6317ff63f85!2z5aSn5ZyL55S66aeF!5e0!3m2!1szh-TW!2stw!4v1714490000000" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Full Itinerary -->
+        <section id="full-itinerary" class="mb-32">
+            <h3 class="text-2xl font-black mb-16 flex items-center gap-4">
+                <span class="w-12 h-px bg-slate-900"></span> 行程細節傳輸日誌
+            </h3>
+
+            <div class="relative pl-8 timeline-container space-y-24">
+                
+                <!-- Day 1 -->
+                <div id="day1" class="relative">
+                    <span class="date-badge absolute -left-[5.5rem] top-1">MAY 08</span>
+                    <h4 class="text-xl font-black mb-6">系統部署：大阪啟動</h4>
+                    <div class="glass-card p-8">
+                        <div class="flex flex-wrap gap-8 text-sm">
+                            <div class="flex-1">
+                                <h5 class="font-bold border-b pb-2 mb-3">19:35 KIX 到著</h5>
+                                <p class="text-slate-500 leading-relaxed text-xs">
+                                    綠色窗口領取 5 日廣域券。搭乘 Haruka 至天王寺轉乘御堂筋線。
+                                </p>
+                            </div>
+                            <div class="flex-1">
+                                <h5 class="font-bold border-b pb-2 mb-3">Base Deployment</h5>
+                                <p class="text-slate-500 leading-relaxed text-xs">
+                                    大國町 Airbnb 入住。首晚難波美食街拍與物資補給。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Day 2 -->
+                <div id="day2" class="relative">
+                    <span class="date-badge absolute -left-[5.5rem] top-1">MAY 09</span>
+                    <h4 class="text-xl font-black mb-6">白鷺・神戶牛肉之戰</h4>
+                    <div class="glass-card p-8 border-l-4 border-red-600">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <div class="text-[10px] font-bold text-red-600 mb-2">SHINKANSEN SCHEDULE</div>
+                                <div class="p-4 bg-slate-50 rounded-xl mb-4">
+                                    <div class="flex justify-between text-xs font-bold mb-2">
+                                        <span>新大阪 發</span><span>08:12</span>
+                                    </div>
+                                    <div class="flex justify-between text-xs font-bold">
+                                        <span>抵達 姬路</span><span>08:41</span>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-slate-500">
+                                    <b>姬路城：</b> 日本首座世界遺產。早上 9 點開門第一波入城，攻頂天守閣。
+                                </p>
+                            </div>
+                            <div class="pt-6">
+                                <div class="text-[10px] font-bold text-slate-400 mb-2 uppercase">Afternoon Node</div>
+                                <p class="text-xs text-slate-500 leading-relaxed">
+                                    <b>神戶三之宮：</b> 搭乘新幹線回防新神戶，預約頂級神戶牛排午間饗宴。傍晚前往神戶港或摩耶山，擷取千萬美金夜景封包。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Day 3 -->
+                <div id="day3" class="relative">
+                    <span class="date-badge absolute -left-[5.5rem] top-1">MAY 10</span>
+                    <h4 class="text-xl font-black mb-6 text-blue-700">海之京都：天橋立與伊根</h4>
+                    <div class="glass-card p-8 border-l-4 border-blue-600 bg-blue-50/20">
+                        <div class="flex flex-col md:flex-row gap-12">
+                            <div class="md:w-1/3">
+                                <div class="flex items-center gap-2 mb-6">
+                                    <div class="w-8 h-8 bg-blue-600 text-white rounded flex items-center justify-center text-xs">
+                                        <i class="fas fa-train"></i>
+                                    </div>
+                                    <span class="text-sm font-black">Hashidate 1</span>
+                                </div>
+                                <ul class="text-[10px] font-bold space-y-4 text-slate-600">
+                                    <li class="flex justify-between"><span>大國町</span> <span>07:15</span></li>
+                                    <li class="flex justify-between text-red-600"><span>京都發</span> <span>08:38</span></li>
+                                    <li class="flex justify-between"><span>天橋立</span> <span>10:43</span></li>
+                                </ul>
+                            </div>
+                            <div class="md:w-2/3 space-y-6">
+                                <div class="flex gap-4">
+                                    <div class="text-blue-600 font-black text-xs">A</div>
+                                    <div class="text-xs text-slate-500 leading-relaxed">
+                                        <b>飛龍觀：</b> 抵達即刻登頂，拍下日本三景「昇龍觀」大景。
+                                    </div>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="text-blue-600 font-black text-xs">B</div>
+                                    <div class="text-xs text-slate-500 leading-relaxed">
+                                        <b>伊根舟屋：</b> 轉乘丹後巴士前往，參加觀光船。追焦海鷗與 230 間舟屋，這是一場深度的視覺擷取。
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Day 4 -->
+                <div id="day4" class="relative">
+                    <span class="date-badge absolute -left-[5.5rem] top-1">MAY 11</span>
+                    <h4 class="text-xl font-black mb-6">逆向工程：嵐山小火車</h4>
+                    <div class="glass-card p-8 border-l-4 border-pink-400">
+                        <div class="bg-pink-50 p-6 rounded-2xl mb-8 flex justify-between items-center">
+                            <div>
+                                <div class="text-pink-600 font-bold text-[10px] uppercase mb-1">Reservation Status: OK</div>
+                                <h5 class="text-2xl font-black text-slate-900">嵯峨野 4 號 | 10:30</h5>
+                                <p class="text-xs text-slate-400 mt-1">Car 3 / Seats 1A, 1D, 3A</p>
+                            </div>
+                            <img src="image_78428c.jpg" alt="Logo" class="w-12 h-12 rounded-full border-2 border-white">
+                        </div>
+                        <div class="text-xs text-slate-500 leading-relaxed">
+                            大國町 $\rightarrow$ 京都 $\rightarrow$ 馬堀。逆向玩法：從龜岡搭車，嵐山站下車。下車後直接進入<b>竹林小徑頂部</b>，開始一路下坡散策至天龍寺與渡月橋，完美避開上坡人潮。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Day 5 & 6 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div id="day5" class="relative">
+                        <span class="date-badge mb-4 block w-fit">MAY 12</span>
+                        <div class="glass-card p-8 border-t-4 border-green-500">
+                            <h5 class="font-bold text-lg mb-4">京都與宇治</h5>
+                            <p class="text-xs text-slate-500 leading-relaxed">
+                                伏見稻荷大社鳥居隧道、宇治平等院鳳凰堂。在茶鄉體驗職人級的抹茶與歷史厚度。
+                            </p>
+                        </div>
+                    </div>
+                    <div id="day6" class="relative">
+                        <span class="date-badge mb-4 block w-fit">MAY 13</span>
+                        <div class="glass-card p-8 border-t-4 border-yellow-500">
+                            <h5 class="font-bold text-lg mb-4">大阪職人補給</h5>
+                            <p class="text-xs text-slate-500 leading-relaxed">
+                                黑門市場海鮮早餐、日本橋電器街淘寶。最後一晚在道頓堀與心齋橋進行男子漢慶功宴。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Day 7 -->
+                <div id="day7" class="relative">
+                    <span class="date-badge absolute -left-[5.5rem] top-1">MAY 14</span>
+                    <h4 class="text-xl font-black mb-6">任務回傳：關西空港</h4>
+                    <div class="glass-card p-10 bg-slate-50 border-dashed border-2">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <div class="font-bold">09:30 Check-in</div>
+                                <p class="text-[10px] text-slate-400 mt-1 uppercase">Node: Namba Rapi:t Transfer</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-4xl font-black italic">12:10</div>
+                                <div class="text-[10px] font-bold text-red-500 mt-2 uppercase tracking-widest">EVA AIR Flight</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // 櫻花飄落背景邏輯
+        const box = document.getElementById('sakura-box');
+        const count = 30;
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.classList.add('petal');
+            const size = Math.random() * 8 + 5 + 'px';
+            petal.style.width = size;
+            petal.style.height = size;
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.animationDuration = Math.random() * 5 + 8 + 's';
+            petal.style.animationDelay = Math.random() * 5 + 's';
+            box.appendChild(petal);
+            petal.addEventListener('animationend', () => { petal.remove(); createPetal(); });
+        }
+        for (let i = 0; i < count; i++) { setTimeout(createPetal, i * 200); }
+
+        // Sidebar 捲動偵測
+        const sections = document.querySelectorAll('section, div[id^="day"]');
+        const navLinks = document.querySelectorAll('.nav-item');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
